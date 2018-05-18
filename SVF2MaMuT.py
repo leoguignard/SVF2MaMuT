@@ -55,7 +55,7 @@ def read_param_file():
             if param_name == 'time':
                 param_dict[param_name] = int(split_line[1])
         path_SVF = param_dict.get('path_to_SVF', '.')
-        path_DB = param_dict.get('path_to_DB', '.')
+        path_DB = param_dict.get('path_to_DB', '')
         path_output = param_dict.get('path_output', '.')
         tissue_ids = param_dict.get('tissue_ids', [])
         tissue_names = param_dict.get('tissue_names', [])
@@ -84,15 +84,20 @@ def main():
     # lines = f.readline()
     # f.close()
 
-    DATA = np.loadtxt(path_to_DB, delimiter = ',', skiprows = 1, usecols = (0, 9))
+    if os.path.exists(path_to_DB):
+        DATA = np.loadtxt(path_to_DB, delimiter = ',', skiprows = 1, usecols = (0, 9))
+        tracking_value = dict(DATA[:, (0, 1)])
+        kept_nodes = [c for c in SVF.nodes if tracking_value[c] in tissue_ids]
+        kept_nodes_set = set(kept_nodes)
+        t_id_2_N = dict(zip(tissue_ids, tissue_names))
+    else:
+        kept_nodes = SVF.nodes
+        kept_nodes_set = set(kept_nodes)
+        tracking_value = {c:1 for c in kept_nodes}
 
-    tracking_value = dict(DATA[:, (0, 1)])
 
     kept_times = range(begin, end+1)
-    kept_nodes = [c for c in SVF.nodes if tracking_value[c] in tissue_ids]
-    kept_nodes_set = set(kept_nodes)
     first_nodes = [c for c in SVF.time_nodes[min(kept_times)] if c in kept_nodes_set]
-    t_id_2_N = dict(zip(tissue_ids, tissue_names))
 
     if not os.path.exists(os.path.dirname(path_output)):
         os.makedirs(os.path.dirname(path_output))
