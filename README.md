@@ -1,6 +1,6 @@
 # svf2MaMuT
 
-Script that write a MaMuT file from the output of the Statistical Vector Flow analysis described in [...]
+Script that write a MaMuT file from the output of the Statistical Vector Flow analysis described in *In toto imaging and reconstruction of post-implantation mouse development at the single-cell level*
 This script is largely inspired by the code to write simi data to MaMuT that [Bruno C. Vellutini wrote](https://github.com/nelas/simi.py).
 
 # Usage
